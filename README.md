@@ -12,3 +12,4 @@ Start with the Word laboratory guide. This repository is intentionally incomplet
 7. Terminal B: complete/run profiling and ingestion scripts.
 
 Do not commit `.env`, generated raw data, or watermark state unless specifically instructed.
+# DSS150P_Lab02_Risma_Vincenzo
