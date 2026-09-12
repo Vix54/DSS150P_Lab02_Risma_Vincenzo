@@ -1,0 +1,20 @@
+[
+  {
+    "source_file": "customers.csv",
+    "ingested_at": "2026-09-12T14:44:31.929889+00:00",
+    "bytes": 18183,
+    "sha256": "4229a20fde8733740f6d9a4c4bc49029dec0a36c96fce4efc2b50e14e0c2c80b"
+  },
+  {
+    "source_file": "orders.json",
+    "ingested_at": "2026-09-12T14:44:31.967159+00:00",
+    "bytes": 77938,
+    "sha256": "7d303788cd3581a54d738cecd42679cc7ecc458caf66d9897aaa73a792bbce69"
+  },
+  {
+    "source_file": "products.parquet",
+    "ingested_at": "2026-09-12T14:44:32.000240+00:00",
+    "bytes": 14652,
+    "sha256": "cf3b6afd1eea6c5c53a1f60e8e0e9f17dddef19ea5c8e57df10350ad9de93fc7"
+  }
+]
