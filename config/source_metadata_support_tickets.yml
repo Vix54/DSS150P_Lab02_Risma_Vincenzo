@@ -1,0 +1,34 @@
+source_name: "support_tickets"
+source_type: "PostgreSQL table"
+location_or_endpoint: "postgresql://dss150p@localhost:5432/dss150p, table support_tickets"
+owner: "Vincenzo Risma"
+description: "Customer support ticket records with category, priority, assigned agent, and resolution timestamps."
+record_count: 250
+schema:
+  - name: ticket_id
+    type: integer (primary key)
+  - name: customer_id
+    type: varchar(10)
+  - name: category
+    type: varchar(40)
+  - name: priority
+    type: varchar(10)
+  - name: assigned_agent
+    type: varchar(80), nullable
+  - name: opened_at
+    type: timestamp without time zone
+  - name: resolved_at
+    type: timestamp without time zone, nullable
+  - name: status
+    type: varchar(20)
+primary_or_candidate_key: ticket_id
+update_pattern: "Inspection only in this project; no ingestion implemented (see Task 2.4 for a possible timestamp/CDC strategy)"
+known_quality_issues:
+  - "assigned_agent is null for 4 tickets (unassigned)"
+  - "resolved_at is null for tickets still In Progress or Open, consistent with those statuses"
+  - "No foreign key constraint enforced from customer_id to the customers source, despite the logical relationship"
+acquisition_method: "Bounded, read-only SQL queries; no full-table scans or destructive statements against the source"
+validation_checks:
+  - "ticket_id must be non-null and unique, enforced by the database primary key"
+  - "status must be one of a known enumerated set (e.g. Open, In Progress, Resolved, Closed)"
+  - "resolved_at, when present, must be greater than or equal to opened_at"

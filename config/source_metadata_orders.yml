@@ -1,0 +1,36 @@
+source_name: "orders"
+source_type: "JSON file"
+location_or_endpoint: "data/orders.json"
+owner: "Vincenzo Risma"
+description: "Order transactions with item counts, monetary amounts, timestamps, and nested shipping details."
+record_count: 250
+schema:
+  - name: order_id
+    type: string
+  - name: customer_id
+    type: string
+  - name: order_timestamp
+    type: string (ISO timestamp)
+  - name: status
+    type: string (categorical)
+  - name: item_count
+    type: integer
+  - name: subtotal
+    type: float
+  - name: shipping_fee
+    type: integer
+  - name: total_amount
+    type: float
+  - name: shipping
+    type: nested object (region, method)
+primary_or_candidate_key: order_id
+update_pattern: "Full file replacement, static snapshot"
+known_quality_issues:
+  - "No missing keys or null values found across any of the 250 records"
+  - "Numeric field types are consistent across all records (item_count, shipping_fee always int; subtotal, total_amount always float)"
+acquisition_method: "File copy with SHA-256 manifest into raw area"
+validation_checks:
+  - "order_id must be non-null and unique"
+  - "customer_id should reference an existing customer_id in the customers source"
+  - "order_timestamp must parse as a valid ISO timestamp"
+  - "total_amount should equal subtotal plus shipping_fee"

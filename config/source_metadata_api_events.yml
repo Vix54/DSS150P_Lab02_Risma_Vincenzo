@@ -1,0 +1,29 @@
+source_name: "api_events"
+source_type: "REST API (paginated)"
+location_or_endpoint: "http://127.0.0.1:8000/api/events"
+owner: "Vincenzo Risma"
+description: "Paginated event stream (page views, cart activity, etc.) with customer association, monetary amount, and nested metadata."
+record_count: 122
+schema:
+  - name: event_id
+    type: string
+  - name: customer_id
+    type: string
+  - name: event_type
+    type: string (categorical)
+  - name: amount
+    type: float
+  - name: updated_at
+    type: string (ISO timestamp)
+  - name: metadata
+    type: nested object (channel, campaign)
+primary_or_candidate_key: event_id
+update_pattern: "Incremental retrieval via updated_after query parameter; results sorted by (updated_at, event_id)"
+known_quality_issues:
+  - "2 duplicate event_id values (E0020, E0055), each appearing twice with a different amount and a later updated_at on the second occurrence"
+  - "Total of 122 records spans multiple pages at 20 per page; single-page retrieval would miss roughly 84% of records"
+acquisition_method: "Paginated GET requests until has_more is false; ingestion timestamp and source attached per record"
+validation_checks:
+  - "event_id should be unique after deduplication, keeping the record with the latest updated_at"
+  - "amount must be non-negative"
+  - "updated_at must parse as a valid ISO timestamp"
