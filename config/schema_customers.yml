@@ -1,0 +1,50 @@
+schema_name: customers
+fields:
+  - name: customer_id
+    source_representation: "string (CSV text)"
+    logical_type: "identifier"
+    nullable: false
+    key_role: "primary key (declared unique, but 3 duplicate values found in source; see known_quality_issues)"
+    semantic_definition: "Unique identifier assigned to a customer at signup"
+
+  - name: first_name
+    source_representation: "string"
+    logical_type: "string (personal name)"
+    nullable: false
+    key_role: "none"
+    semantic_definition: "Customer's given name"
+
+  - name: last_name
+    source_representation: "string"
+    logical_type: "string (personal name)"
+    nullable: false
+    key_role: "none"
+    semantic_definition: "Customer's family name"
+
+  - name: email
+    source_representation: "string"
+    logical_type: "email address"
+    nullable: true
+    key_role: "none"
+    semantic_definition: "Customer's contact email; not guaranteed present (1.2% missing in source)"
+
+  - name: city
+    source_representation: "string"
+    logical_type: "categorical string"
+    nullable: true
+    key_role: "none"
+    semantic_definition: "City associated with the customer's registered address; 0.8% missing in source"
+
+  - name: signup_date
+    source_representation: "string (ISO date text, e.g. 2025-04-27)"
+    logical_type: "date"
+    nullable: false
+    key_role: "none"
+    semantic_definition: "Date the customer registered; arrives as plain text with no type enforcement at the source"
+
+  - name: customer_segment
+    source_representation: "string"
+    logical_type: "categorical / enum (Professional, Retail, SME, Student)"
+    nullable: false
+    key_role: "none"
+    semantic_definition: "Business classification segment assigned to the customer"

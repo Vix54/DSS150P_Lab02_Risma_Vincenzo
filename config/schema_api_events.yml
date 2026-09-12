@@ -1,0 +1,50 @@
+schema_name: api_events
+fields:
+  - name: event_id
+    source_representation: "string (JSON text)"
+    logical_type: "identifier"
+    nullable: false
+    key_role: "candidate key (declared unique, but 2 duplicate values found in source; see known_quality_issues)"
+    semantic_definition: "Unique identifier for a single event emission"
+
+  - name: customer_id
+    source_representation: "string (JSON text)"
+    logical_type: "identifier (foreign key)"
+    nullable: false
+    key_role: "foreign key, references customers.customer_id"
+    semantic_definition: "Customer associated with the event"
+
+  - name: event_type
+    source_representation: "string"
+    logical_type: "categorical string"
+    nullable: false
+    key_role: "none"
+    semantic_definition: "Type of interaction recorded (e.g. page_view, add_to_cart)"
+
+  - name: amount
+    source_representation: "JSON number"
+    logical_type: "decimal / float"
+    nullable: false
+    key_role: "none"
+    semantic_definition: "Monetary value associated with the event"
+
+  - name: updated_at
+    source_representation: "string (ISO timestamp text)"
+    logical_type: "timestamp"
+    nullable: false
+    key_role: "none, but functions as the incremental watermark field"
+    semantic_definition: "Timestamp of the event's last update; used to detect and retrieve only new/changed records"
+
+  - name: metadata.channel
+    source_representation: "string, nested inside JSON metadata object"
+    logical_type: "categorical string"
+    nullable: false
+    key_role: "none"
+    semantic_definition: "Acquisition or marketing channel associated with the event"
+
+  - name: metadata.campaign
+    source_representation: "string, nested inside JSON metadata object"
+    logical_type: "categorical string"
+    nullable: false
+    key_role: "none"
+    semantic_definition: "Campaign associated with the event, or the literal value 'none' when not applicable"
