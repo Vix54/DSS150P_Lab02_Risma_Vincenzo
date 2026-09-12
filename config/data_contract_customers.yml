@@ -1,18 +1,51 @@
 dataset: customers
-owner: "TODO"
+description: "Customer master data including identity, contact, location, signup date, and segment classification."
+owner: "Vincenzo Risma"
+producer: "Course-provided source system (customers.csv)"
+consumer: "DSS150P ingestion pipeline; downstream analytics and reporting stages"
+contact_escalation: "Vincenzo Risma"
 source_type: csv
 primary_key: customer_id
 delivery:
-  cadence: "TODO"
+  cadence: "One-time static file delivery; no recurring refresh mechanism observed in this exercise"
+ingestion_approach:
+  type: "Full load"
+  justification: "Source is a static snapshot file with no updated_at or watermark field and no incremental delivery mechanism; a full re-read on each run is the only approach the source supports, consistent with the file-based ingestion design in Task 2.4"
 fields:
   - name: customer_id
     type: string
     nullable: false
     unique: true
+  - name: first_name
+    type: string
+    nullable: false
+    unique: false
+  - name: last_name
+    type: string
+    nullable: false
+    unique: false
   - name: email
     type: string
     nullable: true
+    unique: false
+  - name: city
+    type: string
+    nullable: true
+    unique: false
+  - name: signup_date
+    type: date
+    nullable: false
+    unique: false
+  - name: customer_segment
+    type: "string (enum: Professional, Retail, SME, Student)"
+    nullable: false
+    unique: false
 quality_rules:
-  - "TODO: define at least 5 rules"
+  - "customer_id must be non-null and unique; profiling found 3 duplicate customer_id values across 6 rows, 2 appearing to be exact re-ingested records and 1 (C0090) a genuine ID collision between two distinct customers requiring resolution logic before downstream use"
+  - "email must match a valid email address format when present; 1.2% of records have no email"
+  - "city, when present, must be non-empty text; 0.8% of records are missing city"
+  - "signup_date must parse as a valid ISO date and must not fall after the ingestion timestamp"
+  - "customer_segment must be one of the enumerated values: Professional, Retail, SME, Student"
+  - "No exact full-row duplicate records should be treated as distinct logical customers; 4 such duplicates were found in profiling"
 change_policy:
-  schema_change_notice: "TODO"
+  schema_change_notice: "Any addition, removal, or type change to a field must be communicated to consumers before the next scheduled ingestion run; breaking changes such as removed fields or key changes require advance notice, not just after-the-fact changelog documentation"
