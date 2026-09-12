@@ -1,0 +1,13 @@
+run_id,started_at,finished_at,status,source,records_read,records_written,duplicates_removed,watermark_before,watermark_after,error_message
+7bc03db24ac3,2026-09-12T15:09:34.862272+00:00,2026-09-12T15:09:34.980120+00:00,success,files,3,3,0,,,
+7bc03db24ac3,2026-09-12T15:09:34.989325+00:00,2026-09-12T15:09:35.027754+00:00,success,api,122,120,2,,2026-08-21T10:00:00,
+626874c5eb85,2026-09-12T15:10:43.319501+00:00,2026-09-12T15:10:43.336562+00:00,success,files,3,0,3,,,
+626874c5eb85,2026-09-12T15:10:43.354915+00:00,2026-09-12T15:10:43.369514+00:00,success,api,0,0,0,2026-08-21T10:00:00,2026-08-21T10:00:00,
+b87ee849f34a,2026-09-12T15:11:11.451958+00:00,2026-09-12T15:11:11.471665+00:00,success,files,3,0,3,,,
+b87ee849f34a,2026-09-12T15:11:11.496575+00:00,2026-09-12T15:11:11.502995+00:00,failed,api,0,0,0,2026-08-21T10:00:00,2026-08-21T10:00:00,"Failed to reach API at http://127.0.0.1:8000/api/events: HTTPConnectionPool(host='127.0.0.1', port=8000): Max retries exceeded with url: /api/events?page=1&per_page=20&updated_after=2026-08-21T10%3A00%3A00 (Caused by NewConnectionError(""HTTPConnection(host='127.0.0.1', port=8000): Failed to establish a new connection: [Errno 111] Connection refused""))"
+086c972a5db6,2026-09-12T15:12:00.121782+00:00,2026-09-12T15:12:00.147671+00:00,success,files,3,0,3,,,
+086c972a5db6,2026-09-12T15:12:00.165880+00:00,2026-09-12T15:12:00.172523+00:00,failed,api,0,0,0,2026-08-21T10:00:00,2026-08-21T10:00:00,"Failed to reach API at http://127.0.0.1:8000/api/events: HTTPConnectionPool(host='127.0.0.1', port=8000): Max retries exceeded with url: /api/events?page=1&per_page=20&updated_after=2026-08-21T10%3A00%3A00 (Caused by NewConnectionError(""HTTPConnection(host='127.0.0.1', port=8000): Failed to establish a new connection: [Errno 111] Connection refused""))"
+3c8b11a9baa7,2026-09-12T15:13:03.373951+00:00,2026-09-12T15:13:03.389132+00:00,success,files,3,0,3,,,
+3c8b11a9baa7,2026-09-12T15:13:03.395462+00:00,2026-09-12T15:13:03.404257+00:00,failed,api,0,0,0,2026-08-21T10:00:00,2026-08-21T10:00:00,"Failed to reach API at http://127.0.0.1:8000/api/events: HTTPConnectionPool(host='127.0.0.1', port=8000): Max retries exceeded with url: /api/events?page=1&per_page=20&updated_after=2026-08-21T10%3A00%3A00 (Caused by NewConnectionError(""HTTPConnection(host='127.0.0.1', port=8000): Failed to establish a new connection: [Errno 111] Connection refused""))"
+0d34dd7e9df0,2026-09-12T15:13:50.220683+00:00,2026-09-12T15:13:50.238752+00:00,success,files,3,0,3,,,
+0d34dd7e9df0,2026-09-12T15:13:50.264210+00:00,2026-09-12T15:13:50.280402+00:00,success,api,0,0,0,2026-08-21T10:00:00,2026-08-21T10:00:00,

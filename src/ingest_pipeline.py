@@ -3,12 +3,14 @@ Students implement file ingestion + paginated REST API ingestion + watermark + d
 """
 from pathlib import Path
 from datetime import datetime, timezone
-import json, hashlib, shutil
+import json, hashlib, shutil, csv, uuid
 import requests
 
 ROOT=Path(__file__).resolve().parents[1]
 DATA=ROOT/'data'; RAW=ROOT/'raw'; STATE=ROOT/'state'
 API_URL='http://127.0.0.1:8000/api/events'
+RUN_LOG_PATH=ROOT/'outputs'/'pipeline_run_log.csv'
+RUN_LOG_HEADER=['run_id','started_at','finished_at','status','source','records_read','records_written','duplicates_removed','watermark_before','watermark_after','error_message']
 
 def utc_now(): return datetime.now(timezone.utc).isoformat()
 
@@ -28,6 +30,15 @@ def save_watermark(value):
     tmp_path = STATE/'api_watermark.json.tmp'
     tmp_path.write_text(json.dumps({'updated_at':value},indent=2))
     tmp_path.replace(STATE/'api_watermark.json')
+
+def append_run_log(row):
+    RUN_LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
+    file_exists = RUN_LOG_PATH.exists()
+    with RUN_LOG_PATH.open('a', newline='') as f:
+        writer = csv.DictWriter(f, fieldnames=RUN_LOG_HEADER)
+        if not file_exists:
+            writer.writeheader()
+        writer.writerow(row)
 
 def ingest_files():
     raw_files = RAW/'files'
@@ -79,7 +90,12 @@ def ingest_files():
 def fetch_api_page(page, per_page=20, updated_after=None):
     params={'page':page,'per_page':per_page}
     if updated_after: params['updated_after']=updated_after
-    r=requests.get(API_URL,params=params,timeout=30); r.raise_for_status(); return r.json()
+    try:
+        r = requests.get(API_URL, params=params, timeout=30)
+        r.raise_for_status()
+        return r.json()
+    except requests.exceptions.RequestException as e:
+        raise RuntimeError(f"Failed to reach API at {API_URL}: {e}") from e
 
 def ingest_api():
     watermark_before = load_watermark()
@@ -142,5 +158,53 @@ def ingest_api():
 
 if __name__=='__main__':
     RAW.mkdir(exist_ok=True); STATE.mkdir(exist_ok=True)
-    ingest_files()
-    ingest_api()
+    run_id = uuid.uuid4().hex[:12]
+
+    started_at = utc_now()
+    try:
+        result = ingest_files()
+        status = 'success'
+        error_message = ''
+    except Exception as e:
+        result = {'records_read': 0, 'records_written': 0, 'duplicates_removed': 0}
+        status = 'failed'
+        error_message = str(e)
+    finished_at = utc_now()
+    append_run_log({
+        'run_id': run_id,
+        'started_at': started_at,
+        'finished_at': finished_at,
+        'status': status,
+        'source': 'files',
+        'records_read': result['records_read'],
+        'records_written': result['records_written'],
+        'duplicates_removed': result['duplicates_removed'],
+        'watermark_before': '',
+        'watermark_after': '',
+        'error_message': error_message
+    })
+
+    watermark_before_attempt = load_watermark()
+    started_at = utc_now()
+    try:
+        result = ingest_api()
+        status = 'success'
+        error_message = ''
+    except Exception as e:
+        result = {'records_read': 0, 'records_written': 0, 'duplicates_removed': 0, 'watermark_before': watermark_before_attempt, 'watermark_after': watermark_before_attempt}
+        status = 'failed'
+        error_message = str(e)
+    finished_at = utc_now()
+    append_run_log({
+        'run_id': run_id,
+        'started_at': started_at,
+        'finished_at': finished_at,
+        'status': status,
+        'source': 'api',
+        'records_read': result['records_read'],
+        'records_written': result['records_written'],
+        'duplicates_removed': result['duplicates_removed'],
+        'watermark_before': result['watermark_before'],
+        'watermark_after': result['watermark_after'],
+        'error_message': error_message
+    })
